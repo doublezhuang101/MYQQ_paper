@@ -9,6 +9,7 @@ using namespace MQ;
 //MQ::Type		MQ 相关数据封装
 //MQ::文本代码	MQ 文本代码
 vector<string> QQnum;
+vector<string> IDname;
 void processEvent(const Event::NormalEvent& e)
 {
 	MQEventCheck(e.eventType, Enum::MQEventEnum::消息类型_好友)
@@ -30,6 +31,10 @@ void processEvent(const Event::NormalEvent& e)
 */
 MQ_REGISTER_EVENT
 {
+	Api::FrameAPI::OutPut("fun");
+	InitQQ(QQnum);
+	InitIDcard(IDname);
+	Save_data(QQnum, IDname);
 	if (EventContInit)return;
 	//注册事件回调函数1,优先级20000
 	MQ::Event::reg_Event(processEvent, 20000);
@@ -51,14 +56,14 @@ MQ_REGISTER_EVENT
 		MQEventCheck(e.eventType, Enum::MQEventEnum::消息类型_群)
 		{
 			if (e.botQQ == e.activeQQ)return;
+
 			if (e.msg=="#ROLL")
 			{
 				Api::FrameAPI::OutPut("success");
 				InitQQ(QQnum);
-				test(QQnum);
+				InitIDcard(IDname);
+				Save_data(QQnum, IDname);
 			}
-			//Roll_name();
-			
 			//Api::FrameAPI::OutPut(e.botQQ);
 			//Api::FrameAPI::OutPut(e.sourceId);
 			Api::FrameAPI::OutPut(e.activeQQ);
@@ -66,17 +71,24 @@ MQ_REGISTER_EVENT
 			Api::FrameAPI::OutPut(e.msg);
 			//Api::FrameAPI::OutPut(e.msgNum);
 			//Api::FrameAPI::OutPut(e.msgId);
-
 			//Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, "", e.activeQQ, MQ::文本代码::对象QQ() + ":" + e.msg);
 			e.eventBlock();
 		}
 	}, 15000);
+
 	//注册事件回调函数3,优先级10000
 	Event::reg_Event([](const Event::NormalEvent& e) {
 		MQEventCheck(e.eventType, Enum::MQEventEnum::消息类型_本插件载入)
 		{
-			//设置事件返回值为忽略,若高优先级回调函数已阻塞则无法修改阻塞状态
-			e.retIgnore();
+			static bool containInit = false;
+			if (containInit)
+			{
+				return;
+			}
+			Api::FrameAPI::OutPut("fun");
+			InitQQ(QQnum);
+			InitIDcard(IDname);
+			Save_data(QQnum, IDname);
 		}
 		}, 10000);
 	//注册设置窗口,优先级为默认30000
