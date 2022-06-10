@@ -34,7 +34,10 @@ MQ_REGISTER_EVENT
 	Api::FrameAPI::OutPut("fun");
 	InitQQ(QQnum);
 	InitIDcard(IDname);
-	Save_data(QQnum, IDname);
+	//Save_data(QQnum, IDname);
+	/*
+	初始化框架内存
+	*/
 	if (EventContInit)return;
 	//注册事件回调函数1,优先级20000
 	MQ::Event::reg_Event(processEvent, 20000);
@@ -60,18 +63,17 @@ MQ_REGISTER_EVENT
 			if (e.msg=="#ROLL")
 			{
 				Api::FrameAPI::OutPut("success");
-				InitQQ(QQnum);
-				InitIDcard(IDname);
-				Save_data(QQnum, IDname);
+				//Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::对象QQ() + ":" + e.msg);
+				Roll_name(e, IDname, QQnum);
 			}
 			//Api::FrameAPI::OutPut(e.botQQ);
 			//Api::FrameAPI::OutPut(e.sourceId);
-			Api::FrameAPI::OutPut(e.activeQQ);
-			Api::FrameAPI::OutPut(e.passiveQQ);
-			Api::FrameAPI::OutPut(e.msg);
+			//Api::FrameAPI::OutPut(e.activeQQ);
+			//Api::FrameAPI::OutPut(e.passiveQQ);
+			//Api::FrameAPI::OutPut(e.msg);
 			//Api::FrameAPI::OutPut(e.msgNum);
 			//Api::FrameAPI::OutPut(e.msgId);
-			//Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, "", e.activeQQ, MQ::文本代码::对象QQ() + ":" + e.msg);
+			
 			e.eventBlock();
 		}
 	}, 15000);
@@ -85,10 +87,10 @@ MQ_REGISTER_EVENT
 			{
 				return;
 			}
-			Api::FrameAPI::OutPut("fun");
-			InitQQ(QQnum);
-			InitIDcard(IDname);
-			Save_data(QQnum, IDname);
+			//Api::FrameAPI::OutPut("fun");
+			//InitQQ(QQnum);
+			//InitIDcard(IDname);
+			//Save_data(QQnum, IDname);
 		}
 		}, 10000);
 	//注册设置窗口,优先级为默认30000

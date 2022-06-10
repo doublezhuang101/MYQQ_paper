@@ -7,6 +7,7 @@
 #include <cstdlib> //random
 #include <ctime>
 using namespace std;
+using namespace MQ;
 
 void InitQQ(vector<string> &QQnum)//QQ号读入内存
 {
@@ -61,49 +62,49 @@ int random(int range)
 
 void Roll_name(const MQ::Event::NormalEvent& e,vector<string> IDname,vector<string> QQnum)
 {
+	MQ::Api::FrameAPI::OutPut("start");
 	ofstream wnfile;//写入ID文件
 	ifstream rnfile;//读ID文件
-	string tmp_name="";
-	for (vector<string>::iterator it = QQnum.begin(); it != QQnum.end(); it++)
+	vector<string> repeat_name;
+	string tmp = "";
+	string repeat_id;//输出重复ID
+	int id_flag = 0;
+	if (e.msg=="#ROLL")
 	{
-		MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, *it, IDname[random(IDname.size())]);
-		//cout << *it << endl;
+		MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, e.activeQQ, IDname[random(IDname.size())]);
+		MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "修改完成[@" + e.activeQQ + "]");
 	}
-	vector<string> name ;
-	rnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\name.txt", ios::out);
-	while (!rnfile.eof())
+	if (e.msg=="#ROLLALL")
 	{
-		rnfile >> tmp_name;
-		name.push_back(tmp_name);
+		for (vector<string>::iterator it = QQnum.begin(); it != QQnum.end(); it++)
+		{
+			MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, *it, IDname[random(IDname.size())]);
+			tmp=MQ::Api::GroupAPI::GetGroupCard(e.botQQ, e.sourceId, *it);
+			repeat_name.push_back(tmp);
+			if (count(repeat_name.begin(),repeat_name.end(),tmp)!=1)
+			{
+				MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "ID" + tmp + "重复" + to_string(count(repeat_name.begin(), repeat_name.end(), tmp)) + "次");
+				repeat_id += tmp;
+				repeat_id += ",";
+				id_flag = 1;
+			}
+		}
+		if (id_flag==1)
+		{
+			MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "此轮重复ID"+repeat_id);
+		}
+		else
+		{
+			MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "此轮无重复ID");
+		}
 	}
-
-	vector<string>::iterator it;
-	it = find(name.begin(), name.end(), "测试5");
+	MQ::Api::FrameAPI::OutPut("finish");
+	//vector<string>::iterator it;
+	//it = find(name.begin(), name.end(), "测试5");
 	//if (it != name.end())
 	//	cout << "success" << *it << endl;
 	//else
 	//	cout << "fail" << endl;
 	//cout << name.size() << endl;
-	string data;
-	wnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\name.txt", ios::out);
-	for (vector<string>::iterator it = name.begin(); it != name.end(); it++)
-	{
-		wnfile << *it << endl;
-	}
-	wnfile.close();
 
-	ifstream ifile;
-	ifile.open("name.txt");
-	int i = 0;
-	vector<string> name2;
-	while (!ifile.eof())
-	{
-		ifile >> data;
-		name2.push_back(data);
-	}
-	for (vector<string>::iterator it = name2.begin(); it != name2.end(); it++)
-	{
-		//cout << *it << endl;
-
-	}
 }
