@@ -9,6 +9,8 @@
 using namespace std;
 using namespace MQ;
 
+
+
 void InitQQ(vector<string> &QQnum)//QQ号读入内存
 {
 	ifstream rqfile;//读QQ号码
@@ -57,6 +59,19 @@ void Save_data(vector<string> &QQnum,vector<string> &IDname)//存入本地文件
 	wnfile.close();
 }
 
+void Save_data(vector<string>& IDname)//存入本地文件
+{
+	ofstream wnfile;//写入ID文件
+	//wnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\ID.txt", ios::out);
+	wnfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\name.txt", ios::out);
+	for (vector<string>::iterator it = IDname.begin(); it != IDname.end(); it++)
+	{
+		wnfile << *it << endl;
+	}
+	MQ::Api::FrameAPI::OutPut("保存成功");
+	wnfile.close();
+}
+
 int seed()
 {
 	return time(0);
@@ -78,9 +93,34 @@ bool _find(vector<string> repeat_name,string tmp)
 	else return false;
 }
 
-void Roll_name(const MQ::Event::NormalEvent& e,vector<string> IDname,vector<string> QQnum)
+void Show_ID(vector<string> IDname,string &idstring)
+{
+	for (vector<string>::iterator it = IDname.begin(); it!=IDname.end(); it++)
+	{
+		idstring += *it;
+		idstring += "、";
+	}
+}
+
+bool Delete_ID(vector<string> &IDname,string del_string)
+{
+	vector<string>::iterator iElementFound;
+	iElementFound = find(IDname.begin(), IDname.end(), del_string);
+	if (iElementFound!=IDname.end())
+	{
+		IDname.erase(iElementFound);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Roll_name(const MQ::Event::NormalEvent& e,vector<string> &IDname,vector<string> QQnum)
 {
 	int rand=0;
+	string idstring = "";
 	ofstream wnfile;//写入ID文件
 	ifstream rnfile;//读ID文件
 	vector<string> repeat_name;//判重用容器
@@ -123,5 +163,33 @@ void Roll_name(const MQ::Event::NormalEvent& e,vector<string> IDname,vector<stri
 	{
 		MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2), IDname[random(IDname.size(), seed())]);
 		MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "修改完成[@" + e.activeQQ + "][@"+ e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2)+"]");
+	}
+	if (e.msg.find("#添加")==0)
+	{
+		string wait_join = e.msg.substr(5);
+		if (wait_join.find(","))
+		{
+
+		}
+		IDname.push_back(e.msg.substr(5));
+		MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, e.msg.substr(5)+"添加成功");
+		Save_data(IDname);
+	}
+	if (e.msg.find("#ID")==0)
+	{
+		Show_ID(IDname,idstring);
+		Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, idstring);
+	}
+	if (e.msg.find("#删除")==0)
+	{
+		if (Delete_ID(IDname, e.msg.substr(5)))
+		{
+			Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, e.msg.substr(5)+"完成");
+			Save_data(IDname);
+		}
+		else
+		{
+			Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "未找到ID");
+		}
 	}
 }

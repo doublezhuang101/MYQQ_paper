@@ -12,6 +12,8 @@ using namespace MQ;
 vector<string> QQnum;
 vector<string> IDname;
 string group_QQ = "808752891";
+string group_test = "855895117";
+
 void processEvent(const Event::NormalEvent& e)
 {
 	MQEventCheck(e.eventType, Enum::MQEventEnum::消息类型_好友)
@@ -62,6 +64,10 @@ MQ_REGISTER_EVENT
 		{
 			if (e.botQQ == e.activeQQ)return;
 			if (e.sourceId == group_QQ)
+			{
+				Roll_name(e, IDname, QQnum);
+			}
+			if (e.sourceId == group_test)
 			{
 				Roll_name(e, IDname, QQnum);
 			}
