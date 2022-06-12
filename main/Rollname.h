@@ -13,7 +13,8 @@ void InitQQ(vector<string> &QQnum)//QQ号读入内存
 {
 	ifstream rqfile;//读QQ号码
 	string tmp_qq;
-	rqfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\qqnum.txt", ios::in);
+	//rqfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\qqnum.txt", ios::in);//本地
+	rqfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\qqnum.txt", ios::in);//服务端
 	while (!rqfile.eof())
 	{
 		rqfile >> tmp_qq;
@@ -26,7 +27,8 @@ void InitIDcard(vector<string>& IDname)//群名片读入内存
 {
 	ifstream rnfile;
 	string tmp_id;
-	rnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\name.txt", ios::in);
+	//rnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\name.txt", ios::in);
+	rnfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\name.txt", ios::in);
 	while (!rnfile.eof())
 	{
 		rnfile >> tmp_id;
@@ -39,8 +41,10 @@ void Save_data(vector<string> &QQnum,vector<string> &IDname)//存入本地文件
 {
 	ofstream wqfile;//写入QQ文件
 	ofstream wnfile;//写入ID文件
-	wqfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\QQ.txt", ios::out);
-	wnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\ID.txt", ios::out);
+	//wqfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\QQ.txt", ios::out);
+	//wnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\ID.txt", ios::out);
+	wqfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\QQ.txt", ios::out);
+	wnfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\ID.txt", ios::out);
 	for (vector<string>::iterator it = QQnum.begin(); it != QQnum.end(); it++)
 	{
 		wqfile << *it << endl;
@@ -53,58 +57,71 @@ void Save_data(vector<string> &QQnum,vector<string> &IDname)//存入本地文件
 	wnfile.close();
 }
 
-int random(int range)
+int seed()
 {
-	unsigned seed = time(0);
+	return time(0);
+}
+
+int random(int range,int seed)
+{
 	srand(seed);
+	Sleep(800);
 	return rand() % range;
+}
+
+bool _find(vector<string> repeat_name,string tmp)
+{
+	vector<string>::iterator judge;
+	judge = find(repeat_name.begin(), repeat_name.end(), tmp);
+	if (judge != repeat_name.end())
+		return true;
+	else return false;
 }
 
 void Roll_name(const MQ::Event::NormalEvent& e,vector<string> IDname,vector<string> QQnum)
 {
-	MQ::Api::FrameAPI::OutPut("start");
+	int rand=0;
 	ofstream wnfile;//写入ID文件
 	ifstream rnfile;//读ID文件
-	vector<string> repeat_name;
-	string tmp = "";
+	vector<string> repeat_name;//判重用容器
+	string tmp = "";//每次判断用
 	string repeat_id;//输出重复ID
 	int id_flag = 0;
 	if (e.msg=="#ROLL")
 	{
-		MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, e.activeQQ, IDname[random(IDname.size())]);
+		MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, e.activeQQ, IDname[random(IDname.size(),seed())]);
 		MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "修改完成[@" + e.activeQQ + "]");
 	}
 	if (e.msg=="#ROLLALL")
 	{
 		for (vector<string>::iterator it = QQnum.begin(); it != QQnum.end(); it++)
 		{
-			MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, *it, IDname[random(IDname.size())]);
-			tmp=MQ::Api::GroupAPI::GetGroupCard(e.botQQ, e.sourceId, *it);
-			repeat_name.push_back(tmp);
-			if (count(repeat_name.begin(),repeat_name.end(),tmp)!=1)
+			Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, *it, IDname[random(IDname.size(), seed())]);
+			tmp=MQ::Api::GroupAPI::GetGroupCard(e.botQQ, e.sourceId, *it);//获取此轮修改QQ的ID
+			if (_find(repeat_name,tmp))
 			{
+				//MQ::Api::FrameAPI::OutPut("ID" + tmp + "重复" + to_string(count(repeat_name.begin(), repeat_name.end(), tmp)) + "次");
 				MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "ID" + tmp + "重复" + to_string(count(repeat_name.begin(), repeat_name.end(), tmp)) + "次");
 				repeat_id += tmp;
 				repeat_id += ",";
 				id_flag = 1;
 			}
+			repeat_name.push_back(tmp);
 		}
 		if (id_flag==1)
 		{
 			MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "此轮重复ID"+repeat_id);
+			//MQ::Api::FrameAPI::OutPut("此轮重复ID" + repeat_id);
 		}
 		else
 		{
 			MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "此轮无重复ID");
+			//MQ::Api::FrameAPI::OutPut("此轮重复ID" + repeat_id);
 		}
 	}
-	MQ::Api::FrameAPI::OutPut("finish");
-	//vector<string>::iterator it;
-	//it = find(name.begin(), name.end(), "测试5");
-	//if (it != name.end())
-	//	cout << "success" << *it << endl;
-	//else
-	//	cout << "fail" << endl;
-	//cout << name.size() << endl;
-
+	if (e.msg.find("#ROLL[@") == 0)
+	{
+		MQ::Api::GroupAPI::SetGroupCard(e.botQQ, e.sourceId, e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2), IDname[random(IDname.size(), seed())]);
+		MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "修改完成[@" + e.activeQQ + "][@"+ e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2)+"]");
+	}
 }
