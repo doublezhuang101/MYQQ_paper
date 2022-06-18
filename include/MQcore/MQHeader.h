@@ -19,9 +19,9 @@
 #endif
 
 #if !defined USE_CMAKE && (!defined PluginId)
-#define PluginId "MYQQ_paper"
+#define PluginId "TodayInHistory"
 #define PluginAuthor "doublezhuang"
-#define PluginDesc "plugin information"
+#define PluginDesc "历史上的今天"
 #define PluginVer "1.0.0"
 #define PluginSkey "SDG5D4Ys89h7DJ849d"
 #define PluginSdk "S1"

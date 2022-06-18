@@ -1,6 +1,7 @@
 #include <MQCore/MQHeader.h>
 #include <GlobalVar.h>
 #include "Rollname.h"
+#include "TodayInHistory.h"
 
 using namespace MQ;
 //MQ::Api		MQ 提供的api函数接口
@@ -65,10 +66,12 @@ MQ_REGISTER_EVENT
 			if (e.botQQ == e.activeQQ)return;
 			if (e.sourceId == group_QQ)
 			{
+				//TodayInHistory(e);
 				Roll_name(e, IDname, QQnum);
 			}
 			if (e.sourceId == group_test)
 			{
+				//TodayInHistory(e);
 				Roll_name(e, IDname, QQnum);
 			}
 			//Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::对象QQ() + ":" + e.msg);

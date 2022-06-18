@@ -86,6 +86,9 @@
     <ClInclude Include="main\Rollname.h">
       <Filter>源文件\main</Filter>
     </ClInclude>
+    <ClInclude Include="TodayInHistory.h">
+      <Filter>源文件\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\MQcore\MyQQAPI.inc">
