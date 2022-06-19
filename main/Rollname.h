@@ -43,8 +43,6 @@ void Save_data(vector<string> &QQnum,vector<string> &IDname)//存入本地文件
 {
 	ofstream wqfile;//写入QQ文件
 	ofstream wnfile;//写入ID文件
-	//wqfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\QQ.txt", ios::out);
-	//wnfile.open("C:\\Users\\doublezhuang\\Desktop\\MyQQ\\ID.txt", ios::out);
 	wqfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\QQ.txt", ios::out);
 	wnfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\ID.txt", ios::out);
 	for (vector<string>::iterator it = QQnum.begin(); it != QQnum.end(); it++)

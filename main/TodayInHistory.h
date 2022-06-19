@@ -35,7 +35,6 @@ vector<string> History_Data;
 
 void TodayInHistory(const MQ::Event::NormalEvent& e)
 {
-
 	if (e.msg.find("#历史上的今天") == 0)
 	{
 		string time = Time2Str();

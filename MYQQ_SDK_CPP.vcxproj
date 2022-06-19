@@ -37,8 +37,9 @@
     <ClInclude Include="include\MQcore\MQHeader.h" />
     <ClInclude Include="include\MQcore\MQLogging.h" />
     <ClInclude Include="include\MQcore\MQType.h" />
+    <ClInclude Include="main\common.h" />
     <ClInclude Include="main\Rollname.h" />
-    <ClInclude Include="TodayInHistory.h" />
+    <ClInclude Include="main\TodayInHistory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\MQcore\MyQQAPI.inc" />

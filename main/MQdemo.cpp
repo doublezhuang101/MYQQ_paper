@@ -2,6 +2,7 @@
 #include <GlobalVar.h>
 #include "Rollname.h"
 #include "TodayInHistory.h"
+#include "common.h"
 
 using namespace MQ;
 //MQ::Api		MQ 提供的api函数接口
@@ -53,9 +54,6 @@ MQ_REGISTER_EVENT
 			if (e.botQQ == e.activeQQ)return;
 			//日志输出 lambda
 			Api::FrameAPI::OutPut("lambda");
-			Api::FrameAPI::OutPut(e.activeQQ );
-			Api::FrameAPI::OutPut(e.passiveQQ);
-			Api::FrameAPI::OutPut(e.rawMsg);
 			//复读QQ
 			Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::好友, "", e.activeQQ, MQ::文本代码::对象QQ() + ":" + e.msg);
 			//阻止后续该事件回调函数执行,低优先级回调函数无权拒绝
@@ -64,15 +62,12 @@ MQ_REGISTER_EVENT
 		MQEventCheck(e.eventType, Enum::MQEventEnum::消息类型_群)
 		{
 			if (e.botQQ == e.activeQQ)return;
-			if (e.sourceId == group_QQ)
+			if (e.sourceId == group_QQ|| e.sourceId == group_test)
 			{
-				//TodayInHistory(e);
-				Roll_name(e, IDname, QQnum);
-			}
-			if (e.sourceId == group_test)
-			{
-				//TodayInHistory(e);
-				Roll_name(e, IDname, QQnum);
+				TodayInHistory(e);
+				Common_at(e);
+				Common_ban(e);
+				//Roll_name(e, IDname, QQnum);
 			}
 			//Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::对象QQ() + ":" + e.msg);
 			e.eventBlock();
