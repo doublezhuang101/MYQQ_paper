@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include <string>
 #include <fstream>
@@ -45,20 +45,32 @@ void Common_ban(const MQ::Event::NormalEvent& e)
 	}
 }
 
+void sava_ban()
+{
+
+}
+
 void Common_at(const MQ::Event::NormalEvent& e)
 {
 	if (e.msg.find("#[@")==0 )
 	{
 		if ( e.activeQQ == "739287296")
 		{
-			for (int i = 0; i < atoi(e.msg.substr(e.msg.find("]") + 2).c_str()); i++)
+			if (atoi(e.msg.substr(e.msg.find("]") + 2).c_str())<=10)
 			{
-				Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::Ⱥ, e.sourceId, e.activeQQ, "[@"+ e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2)+"]");
+				for (int i = 0; i < atoi(e.msg.substr(e.msg.find("]") + 2).c_str()); i++)
+				{
+					Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "[@" + e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2) + "]");
+				}
+			}
+			else
+			{
+				Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "禁止炸群");
 			}
 		}
-		else
+		if(e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2)=="739287296")
 		{
-			Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::Ⱥ, e.sourceId, e.activeQQ, "Ī��");
+			Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "在路上了");
 		}
 	}
 }
