@@ -6,21 +6,12 @@
 #include <GlobalVar.h>
 #include <cstdlib> //random
 #include <ctime>
+#include "common.h"
 using namespace std;
 using namespace MQ;
 
-void Sava_History(vector<string>& History_Data)
-{
-	ifstream rnfile;
-	string tmp_id;
-	rnfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\history.txt", ios::in);
-	while (!rnfile.eof())
-	{
-		rnfile >> tmp_id;
-		History_Data.push_back(tmp_id);
-	}
-	rnfile.close();
-}
+string Data_History;//群历史记录
+
 
 string Time2Str()
 {
@@ -31,15 +22,35 @@ string Time2Str()
 	return tmp;
 }
 
-vector<string> History_Data;
-
 void TodayInHistory(const MQ::Event::NormalEvent& e)
 {
+	string Show_history = "";//临时输出变量
 	if (e.msg.find("#历史上的今天") == 0)
 	{
 		string time = Time2Str();
-		History_Data.push_back(time + e.msg.substr(13));
-		MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, time + e.msg.substr(13) + "；历史上的今天添加成功，望警钟长鸣。");
-		Sava_History(History_Data);
+		Data_History = time + e.msg.substr(13);
+		MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, time +" :"+ e.msg.substr(13) + "；历史上的今天添加成功.");
+		Sava_Date_Add(Data_History, "history.txt");
+	}
+	if (e.msg=="编年史")
+	{
+		vector<string> History_Data;//输出群历史记录
+		ifstream rqfile;
+		string tmp;
+		rqfile.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\Save_data\\history.txt", ios::in);
+		while (!rqfile.eof())
+		{
+			rqfile >> tmp;
+			History_Data.push_back(tmp);
+		}
+		rqfile.close();
+		vector<string>::iterator it = History_Data.begin();
+		do
+		{
+			Show_history += *it;
+			Show_history += "\n"; 
+			it++;
+		} while (it != History_Data.end()-1);
+		Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, Show_history);
 	}
 }

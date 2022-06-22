@@ -18,6 +18,27 @@ void Sava_Date(vector<string>& Wait_Save_Data,string filename)
 	file_name.close();
 }
 
+void Sava_Date_Add(vector<string>& Wait_Save_Data, string filename)
+{
+	ofstream file_name;
+	string file_url = "C:\\Users\\Administrator\\Desktop\\MyQQ\\Save_data\\" + filename;
+	file_name.open(file_url, ios::app);
+	for (vector<string>::iterator it = Wait_Save_Data.begin(); it != Wait_Save_Data.end(); it++)
+	{
+		file_name << *it << endl;
+	}
+	file_name.close();
+}
+
+void Sava_Date_Add(string & Wait_Save_Data, string filename)
+{
+	ofstream file_name;
+	string file_url = "C:\\Users\\Administrator\\Desktop\\MyQQ\\Save_data\\" + filename;
+	file_name.open(file_url, ios::app);
+	file_name << Wait_Save_Data << endl;
+	file_name.close();
+}
+
 void Common_Init(vector<string>& initstring,string filename)
 {
 	ifstream init_file;
@@ -54,19 +75,16 @@ void Common_at(const MQ::Event::NormalEvent& e)
 {
 	if (e.msg.find("#[@")==0 )
 	{
-		if ( e.activeQQ == "739287296")
+		if (atoi(e.msg.substr(e.msg.find("]") + 2).c_str())<=10)
 		{
-			if (atoi(e.msg.substr(e.msg.find("]") + 2).c_str())<=10)
+			for (int i = 0; i < atoi(e.msg.substr(e.msg.find("]") + 2).c_str()); i++)
 			{
-				for (int i = 0; i < atoi(e.msg.substr(e.msg.find("]") + 2).c_str()); i++)
-				{
-					Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "[@" + e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2) + "]");
-				}
-			}
-			else
-			{
-				Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "禁止炸群");
-			}
+				Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "[@" + e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2) + "]");
+			}	
+		}
+		else
+		{
+			Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "禁止炸群");
 		}
 		if(e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2)=="739287296")
 		{
