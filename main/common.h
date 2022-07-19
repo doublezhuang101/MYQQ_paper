@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 using namespace std;
-string wait_ban = "";
+string wait_ban = "3148670161";
 int ban_flag = 0;
 
 void Sava_Date(vector<string>& Wait_Save_Data,string filename) 
@@ -52,16 +52,15 @@ void Common_Init(vector<string>& initstring,string filename)
 	init_file.close();
 }
 
-void Common_ban(const MQ::Event::NormalEvent& e)
+void Common_ban_tmp(const MQ::Event::NormalEvent& e)
 {
 	if (e.msg=="[@739287296] "|| e.msg == "[@739287296]")
 	{
 		ban_flag++;
-		wait_ban = e.activeQQ;
 	}
 	if (ban_flag >=2 && wait_ban==e.activeQQ)
 	{
-		Api::GroupAPI::Shutup(e.botQQ, e.sourceId, wait_ban,"1");
+		Api::GroupAPI::Shutup(e.botQQ, e.sourceId, wait_ban,1);
 		ban_flag = 0;
 	}
 }
@@ -89,6 +88,21 @@ void Common_at(const MQ::Event::NormalEvent& e)
 		if(e.msg.substr(e.msg.find("[") + 2, e.msg.find("]") - e.msg.find("[") - 2)=="739287296")
 		{
 			Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "在路上了");
+		}
+	}
+}
+
+void Common_ban(const MQ::Event::NormalEvent& e)
+{
+	if (e.msg.find("#禁言") == 0)
+	{
+		if (e.msg == "[@739287296] " || e.msg == "[@739287296]")
+		{
+			Api::GroupAPI::Shutup(e.botQQ, e.sourceId, wait_ban, 10);
+		}
+		else
+		{
+			Api::GroupAPI::Shutup(e.botQQ, e.sourceId, wait_ban, 10);
 		}
 	}
 }

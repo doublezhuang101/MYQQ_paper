@@ -217,7 +217,7 @@ namespace MQ::Api
 		{
 			return MQ::Detail::QuitGroup(StrToText(botQQ), StrToText(groupId));
 		}
-		inline bool Shutup(Str botQQ, Str groupId, Str objQQ, Str durTime)
+		inline bool Shutup(Str botQQ, Str groupId, Str objQQ, Integer durTime)
 		{
 			return MQ::Detail::Shutup(StrToText(botQQ), StrToText(groupId), StrToText(objQQ), StrToText(durTime));
 		}
