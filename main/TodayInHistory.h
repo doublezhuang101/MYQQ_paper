@@ -48,7 +48,7 @@ void TodayInHistory(const MQ::Event::NormalEvent& e)
 		do
 		{
 			Show_history += *it;
-			Show_history += "\n"; 
+			Show_history += "\n";
 			it++;
 		} while (it != History_Data.end()-1);
 		Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::Ⱥ, e.sourceId, e.activeQQ, Show_history);
