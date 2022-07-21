@@ -66,8 +66,7 @@ MQ_REGISTER_EVENT
 			{
 				TodayInHistory(e);
 				Common_at(e);
-				Common_ban(e);
-				Common_ban_tmp(e);
+				start_ban_comp(e);
 				//Roll_name(e, IDname, QQnum);
 			}
 			//Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::对象QQ() + ":" + e.msg);

@@ -106,3 +106,48 @@ void Common_ban(const MQ::Event::NormalEvent& e)
 		}
 	}
 }
+
+bool whether_atqq(string msg)
+{
+	if (msg.find("["))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/*get qq num*/
+string get_atqqnum(string msg)
+{
+	return msg.substr(msg.find("[") + 2, msg.find("]") - msg.find("[") - 2);
+}
+
+/*赛博居合*/
+void start_ban_comp(const MQ::Event::NormalEvent& e)
+{
+	if (e.msg.find("#赛博对狙") == 0)
+	{
+		Api::GroupAPI::Shutup(e.botQQ, e.sourceId, e.activeQQ, 10);
+		Api::GroupAPI::Shutup(e.botQQ, e.sourceId, get_atqqnum(e.msg), 10);
+	}
+	if (e.msg.find("#禁言") == 0)
+	{
+		//if (get_atqqnum(e.msg) == "739287296")
+		//{
+		//	Api::GroupAPI::Shutup(e.botQQ, e.sourceId, e.activeQQ, ban_time);
+		//}
+		int ban_time = stoi(e.msg.substr(e.msg.find("]") + 2, e.msg.length() - e.msg.find("]")));
+		Api::GroupAPI::Shutup(e.botQQ, e.sourceId, get_atqqnum(e.msg), ban_time);
+	}
+	if (e.msg.find("#大赦") == 0)
+	{
+		Api::GroupAPI::ShutupGroup(e.botQQ, e.sourceId, true);
+	}
+	if (e.msg.find("大赦") == 0)
+	{
+		Api::GroupAPI::ShutupGroup(e.botQQ, e.sourceId, false);
+	}
+}
