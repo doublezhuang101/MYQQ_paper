@@ -166,6 +166,10 @@ namespace MQ::Api
 		{
 			return MQ::Detail::SendVoice(StrToText(botQQ), StrToText(objQQ), StrToText(voiceAddr));
 		}
+		inline bool UpLoadPic(Str botQQ, Integer msgType, Str groupId, Str picFile)
+		{
+			return MQ::Detail::UpLoadPic(StrToText(botQQ),StrToText(msgType),StrToText(groupId),StrToText(picFile));
+		}
 		inline Text SendMail(Str botQQ, Str objQQ, Str voiceAddr)
 		{
 			return MQ::Detail::SendMail(StrToText(botQQ), StrToText(objQQ), StrToText(voiceAddr));

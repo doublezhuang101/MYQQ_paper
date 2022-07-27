@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 using namespace std;
-string wait_ban = "3148670161";
+string wait_ban = "";
 int ban_flag = 0;
 
 void Sava_Date(vector<string>& Wait_Save_Data,string filename) 
