@@ -1,24 +1,22 @@
 #pragma once
-#include <urlmon.h>
-#pragma comment(lib,"urlmon.lib")
-#include <string>
 #ifndef HTTPUTIL_H
 #define HTTPUTIL_H
-#include <windows.h>
+#pragma comment(lib,"urlmon.lib")
+#include <urlmon.h>
 #include <string>
-#include <stdio.h>
-#include<iostream>
+#include <windows.h>
+#include <winsock.h>
 #include <MQCore/MQHeader.h>
 #include <GlobalVar.h>
-#include <cstdlib> //random
-#include <ctime>
-using namespace std;
+#include<xstring>
 using namespace MQ;
+#include <WinInet.h>
+#pragma comment(lib, "wininet.lib")
+constexpr uint32_t MAXBLOCKSIZE = 4096;
 
 #pragma comment(lib,"ws2_32.lib")
-using namespace std;
 
-bool DownloadUrlmon(string strURL, string strPath)
+bool DownloadUrlmon(std::string strURL, std::string strPath)
 {
     size_t len0 = strURL.length();
     int nmlen0 = MultiByteToWideChar(CP_ACP, 0, strURL.c_str(), len0 + 1, NULL, 0);
@@ -34,21 +32,10 @@ bool DownloadUrlmon(string strURL, string strPath)
     return true;
 }
 
-//string strPathImageR1 = "https:\/\/tvax4.sinaimg.cn\/large\/ec43126fgy1gt3xaqo85aj20xc1eox6p.jpg";
-//"https:\\/\\/tvax2.sinaimg.cn\\/large\\/ec43126fgy1h0wy9q5ftfj21zk2m0qv5.jpg"
-// "https:/\\/tvax4.sinaimg.cn\\/large\\/004kfMibgy1gvoixrj7e5j61111jkqnj02.jpg"
-//"https:\"\\/tva2.sinaimg.cn\\/large\\/ec43126fgy1h0d9py0r03j228e35pqv7.jpg"
-//string strPathImage1 = R"(aaa.png)";
-//int main()
-//{
-//	DownloadUrlmon(strPathImageR1, strPathImage1);
-//}
-
-void mParseUrl(char* mUrl, string& serverName, string& filepath, string& filename);
+void mParseUrl(char* mUrl, std::string& serverName, std::string& filepath, std::string& filename);
 SOCKET connectToServer(char* szServerName, WORD portNum);
 int getHeaderLength(char* content);
 char* readUrl2(char* szUrl, long& bytesReturnedOut, char** headerOut);
-
 
 char* sendRequest(char szUrl[]) {
     WSADATA wsaData;
@@ -71,9 +58,9 @@ char* sendRequest(char szUrl[]) {
     return memBuffer;
 }
 
-void mParseUrl(char* mUrl, string& serverName, string& filepath, string& filename) {
-    string::size_type n;
-    string url = mUrl;
+void mParseUrl(char* mUrl, std::string& serverName, std::string& filepath, std::string& filename) {
+    std::string::size_type n;
+    std::string url = mUrl;
 
     if (url.substr(0, 7) == "http://")
         url.erase(0, 7);
@@ -82,7 +69,7 @@ void mParseUrl(char* mUrl, string& serverName, string& filepath, string& filenam
         url.erase(0, 8);
 
     n = url.find('/');
-    if (n != string::npos) {
+    if (n != std::string::npos) {
         serverName = url.substr(0, n);
         filepath = url.substr(n);
         n = filepath.rfind('/');
@@ -155,7 +142,7 @@ char* readUrl2(char* szUrl, long& bytesReturnedOut, char** headerOut) {
     char readBuffer[bufSize], sendBuffer[bufSize], tmpBuffer[bufSize];
     char* tmpResult = nullptr, * result;
     SOCKET conn;
-    string server, filepath, filename;
+    std::string server, filepath, filename;
     long totalBytesRead, thisReadSize, headerLen;
 
     mParseUrl(szUrl, server, filepath, filename);
@@ -211,31 +198,101 @@ char* readUrl2(char* szUrl, long& bytesReturnedOut, char** headerOut) {
 }
 #endif // HTTPUTIL_H
 
-
-
-string getimage(string &url)
+std::string getimage(char url[])
 {
-    char* resData = sendRequest("http://aqua.iw233.cn/api.php?sort=yin&type=json");
-    string str = resData;
+    //"http://aqua.iw233.cn/api.php?sort=yin&type=json"
+    char* resData = sendRequest(url);
+    std::string str = resData;
     str.erase(0, str.find("[\"") + 2);
     str.erase(str.find("\"]"), str.length() - str.find("\"]"));
-    while (str.find("\\") != string::npos)
+    while (str.find("\\") != std::string::npos)
     {
         str.replace(str.find("\\"), 2, "\/");
     }
-    string name = "C:\\Users\\Administrator\\Desktop\\MyQQ\\aaa.jpg";
-    string strPathImage1 = name;
+    std::string name = "C:\\1.jpg";
+    std::string strPathImage1 = name;
+    //download(c_str(str), "D:\\1.jpg");
     DownloadUrlmon(str, strPathImage1);
     delete resData;
     return str;
 }
 
+
+void download(const char* Url, const char* save_as)
+{
+    char Temp[MAXBLOCKSIZE];
+    ULONG Number = 1;
+    FILE* stream;
+    HINTERNET hSession = InternetOpenA("RookIE/1.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+    if (hSession != NULL)
+    {
+        HINTERNET handle2 = InternetOpenUrlA(hSession, Url, NULL, 0, INTERNET_FLAG_DONT_CACHE, 0);
+        if (handle2 != NULL)
+        {
+
+            if ((stream = fopen(save_as, "wb")) != NULL)
+            {
+                while (Number > 0)
+                {
+                    InternetReadFile(handle2, Temp, MAXBLOCKSIZE - 1, &Number);
+
+                    fwrite(Temp, sizeof(char), Number, stream);
+                }
+                fclose(stream);
+            }
+
+            InternetCloseHandle(handle2);
+            handle2 = NULL;
+        }
+        InternetCloseHandle(hSession);
+        hSession = NULL;
+    }
+}
+
 void imagepost(const MQ::Event::NormalEvent& e)
 {
-    string imageurl = "";
-    if (e.msg=="鐧芥瘺")
+    char imageurl[] = "";
+    if (e.msg == "白毛")
     {
-        Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, getimage(imageurl));
-        Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, "C:\\Users\\Administrator\\Desktop\\MyQQ\\aaa.jpg");
+        char imageurl[] = "http://aqua.iw233.cn/api.php?sort=yin&type=json";
+        //MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "收到");
+        //MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, getimage(imageurl));
+        getimage(imageurl);
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        //Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, getimage(imageurl));
+        //Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, "C:\\Users\\Administrator\\Desktop\\MyQQ\\aaa.jpg");
+    }
+    if (e.msg == "壁纸推荐")
+    {
+        char imageurl[] = "http://skri.iw233.cn/api.php?sort=top&type=json";
+        getimage(imageurl);
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+    }
+    if (e.msg == "兽耳")
+    {
+        char imageurl[] = "http://aqua.iw233.cn/api.php?sort=cat&type=json";
+        getimage(imageurl);
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+    }
+    if (e.msg == "随机壁纸")
+    {
+        char imageurl[] = "http://skri.iw233.cn/api.php?sort=random&type=json";
+        getimage(imageurl);
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+    }
+    if (e.msg == "星空")
+    {
+        char imageurl[] = "http://aqua.iw233.cn/api.php?sort=xing&type=json";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+    }
+    if (e.msg == "竖屏")
+    {
+        char imageurl[] = "http://aqua.iw233.cn/api.php?sort=mp&type=json";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+    }
+    if (e.msg == "横屏")
+    {
+        char imageurl[] = "http://aqua.iw233.cn/api.php?sort=pc&type=json";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
     }
 }

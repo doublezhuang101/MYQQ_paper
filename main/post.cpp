@@ -6,9 +6,6 @@
 #include <string>
 #include <windows.h>
 #include <winsock.h>
-#include <MQCore/MQHeader.h>
-#include <GlobalVar.h>
-using namespace MQ;
 
 #pragma comment(lib,"ws2_32.lib")
 
@@ -194,7 +191,7 @@ char* readUrl2(char* szUrl, long& bytesReturnedOut, char** headerOut) {
 }
 #endif // HTTPUTIL_H
 
-std::string getimage(std::string& url)
+int main()
 {
     char* resData = sendRequest("http://aqua.iw233.cn/api.php?sort=yin&type=json");
     std::string str = resData;
@@ -204,20 +201,8 @@ std::string getimage(std::string& url)
     {
         str.replace(str.find("\\"), 2, "\/");
     }
-    std::string name = "C:\\Users\\Administrator\\Desktop\\MyQQ\\aaa.jpg";
+    std::string name = "asdf.jpg";
     std::string strPathImage1 = name;
     DownloadUrlmon(str, strPathImage1);
     delete resData;
-    return str;
-}
-
-void imagepost(const MQ::Event::NormalEvent& e)
-{
-    std::string imageurl = "";
-    if (e.msg == "°×Ã«")
-    {
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::Èº, e.sourceId, e.activeQQ, "ÊÕµ½");
-        Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, getimage(imageurl));
-        Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, "C:\\Users\\Administrator\\Desktop\\MyQQ\\aaa.jpg");
-    }
 }

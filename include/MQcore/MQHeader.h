@@ -19,9 +19,9 @@
 #endif
 
 #if !defined USE_CMAKE && (!defined PluginId)
-#define PluginId "TodayInHistory"
+#define PluginId "imagepost"
 #define PluginAuthor "doublezhuang"
-#define PluginDesc "历史上的今天"
+#define PluginDesc "imagepost"
 #define PluginVer "1.0.0"
 #define PluginSkey "SDG5D4Ys89h7DJ849d"
 #define PluginSdk "S1"

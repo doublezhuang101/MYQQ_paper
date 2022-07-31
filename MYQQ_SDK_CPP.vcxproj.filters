@@ -92,6 +92,9 @@
     <ClInclude Include="main\TodayInHistory.h">
       <Filter>源文件\main</Filter>
     </ClInclude>
+    <ClInclude Include="main\imagepost.h">
+      <Filter>源文件\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\MQcore\MyQQAPI.inc">

@@ -38,6 +38,7 @@
     <ClInclude Include="include\MQcore\MQLogging.h" />
     <ClInclude Include="include\MQcore\MQType.h" />
     <ClInclude Include="main\common.h" />
+    <ClInclude Include="main\imagepost.h" />
     <ClInclude Include="main\Rollname.h" />
     <ClInclude Include="main\TodayInHistory.h" />
   </ItemGroup>
@@ -51,7 +52,7 @@
     <ProjectGuid>{a9ad2671-37f4-40bd-a713-5d0719b15b09}</ProjectGuid>
     <RootNamespace>MYQQSDKCPP</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>TodayInHistory</ProjectName>
+    <ProjectName>imagepost</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

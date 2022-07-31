@@ -1,8 +1,6 @@
 #include <MQCore/MQHeader.h>
 #include <GlobalVar.h>
-#include "Rollname.h"
-#include "TodayInHistory.h"
-#include "common.h"
+#include<string>
 #include "imagepost.h"
 
 using namespace MQ;
@@ -12,10 +10,9 @@ using namespace MQ;
 //MQ::Logging	MQ 日志
 //MQ::Type		MQ 相关数据封装
 //MQ::文本代码	MQ 文本代码
-vector<string> QQnum;
-vector<string> IDname;
-string group_QQ = "808752891";
-string group_test = "855895117";
+
+std::string group_QQ = "808752891";
+std::string group_test = "855895117";
 
 void processEvent(const Event::NormalEvent& e)
 {
@@ -39,8 +36,6 @@ void processEvent(const Event::NormalEvent& e)
 MQ_REGISTER_EVENT
 {
 	Api::FrameAPI::OutPut("fun");
-	InitQQ(QQnum);
-	InitIDcard(IDname);
 	//Save_data(QQnum, IDname);
 	/*
 	初始化框架内存
