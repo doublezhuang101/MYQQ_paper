@@ -11,10 +11,25 @@
 #include<xstring>
 using namespace MQ;
 #include <WinInet.h>
+#include <fstream>
 #pragma comment(lib, "wininet.lib")
 constexpr uint32_t MAXBLOCKSIZE = 4096;
-
 #pragma comment(lib,"ws2_32.lib")
+
+int number = 0;
+
+void Common_Init()
+{
+    std::ifstream init_file;
+    std::string tmp;
+    init_file.open("C:\\Users\\Administrator\\Desktop\\MyQQ\\number.txt", std::ios::in);
+    while (!init_file.eof())
+    {
+        init_file >> tmp;
+    }
+    number=to_integer(tmp);
+    init_file.close();
+}
 
 bool DownloadUrlmon(std::string strURL, std::string strPath)
 {
@@ -209,10 +224,10 @@ std::string getimage(char url[])
     {
         str.replace(str.find("\\"), 2, "\/");
     }
-    std::string name = "C:\\1.jpg";
-    std::string strPathImage1 = name;
+    MQ::Api::FrameAPI::OutPut(str);
+    std::string name = "C:\\img\\" + std::to_string(number) + ".jpg";
     //download(c_str(str), "D:\\1.jpg");
-    DownloadUrlmon(str, strPathImage1);
+    DownloadUrlmon(str, name);
     delete resData;
     return str;
 }
@@ -258,7 +273,9 @@ void imagepost(const MQ::Event::NormalEvent& e)
         //MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, "收到");
         //MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, getimage(imageurl));
         getimage(imageurl);
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        std::string location = "C:\\img\\"+std::to_string(number)+".jpg";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送(location));
+        number++;
         //Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, getimage(imageurl));
         //Api::MessageAPI::UpLoadPic(e.botQQ, 2, e.sourceId, "C:\\Users\\Administrator\\Desktop\\MyQQ\\aaa.jpg");
     }
@@ -266,33 +283,48 @@ void imagepost(const MQ::Event::NormalEvent& e)
     {
         char imageurl[] = "http://skri.iw233.cn/api.php?sort=top&type=json";
         getimage(imageurl);
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        std::string location = "C:\\img\\" + std::to_string(number) + ".jpg";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送(location));
+        number++;
     }
     if (e.msg == "兽耳")
     {
         char imageurl[] = "http://aqua.iw233.cn/api.php?sort=cat&type=json";
         getimage(imageurl);
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        std::string location = "C:\\img\\" + std::to_string(number) + ".jpg";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送(location));
+        number++;
     }
     if (e.msg == "随机壁纸")
     {
         char imageurl[] = "http://skri.iw233.cn/api.php?sort=random&type=json";
         getimage(imageurl);
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        std::string location = "C:\\img\\" + std::to_string(number) + ".jpg";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送(location));
+        number++;
     }
     if (e.msg == "星空")
     {
         char imageurl[] = "http://aqua.iw233.cn/api.php?sort=xing&type=json";
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        getimage(imageurl);
+        std::string location = "C:\\img\\" + std::to_string(number) + ".jpg";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送(location));
+        number++;
     }
     if (e.msg == "竖屏")
     {
         char imageurl[] = "http://aqua.iw233.cn/api.php?sort=mp&type=json";
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        getimage(imageurl);
+        std::string location = "C:\\img\\" + std::to_string(number) + ".jpg";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送(location));
+        number++;
     }
     if (e.msg == "横屏")
     {
         char imageurl[] = "http://aqua.iw233.cn/api.php?sort=pc&type=json";
-        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送("C:\\1.jpg"));
+        getimage(imageurl);
+        std::string location = "C:\\img\\" + std::to_string(number) + ".jpg";
+        MQ::Api::MessageAPI::SendMsg(e.botQQ, Enum::msgType::群, e.sourceId, e.activeQQ, MQ::文本代码::图片发送(location));
+        number++;
     }
 }
