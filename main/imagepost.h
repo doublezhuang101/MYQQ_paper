@@ -12,6 +12,7 @@
 using namespace MQ;
 #include <WinInet.h>
 #include <fstream>
+#include<ctime>
 #pragma comment(lib, "wininet.lib")
 constexpr uint32_t MAXBLOCKSIZE = 4096;
 #pragma comment(lib,"ws2_32.lib")
@@ -27,7 +28,7 @@ void Common_Init()
     {
         init_file >> tmp;
     }
-    number=to_integer(tmp);
+    //number=to_integer(tmp);
     init_file.close();
 }
 
@@ -228,6 +229,7 @@ std::string getimage(char url[])
     std::string name = "C:\\img\\" + std::to_string(number) + ".jpg";
     //download(c_str(str), "D:\\1.jpg");
     DownloadUrlmon(str, name);
+    Sleep(800);
     delete resData;
     return str;
 }
